@@ -1,0 +1,12 @@
+python-dotenv
+# poppler
+# tesseract-ocr
+# libmagic
+unstructured[all-docs]
+langchain_chroma
+langchain
+langchain-community
+langchain_google_genai
+chromadb
+ipykernel
+langchain_huggingface
