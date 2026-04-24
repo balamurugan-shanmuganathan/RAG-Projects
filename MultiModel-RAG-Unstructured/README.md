@@ -1,108 +1,87 @@
-# MultiModel-RAG: Layout-Aware Document Intelligence
+# 🌟 Multi-Modal RAG: Chat with Your Documents (Text, Tables, & Images!)
 
-A professional implementation of a **Multi-Modal Retrieval-Augmented Generation (RAG)** pipeline utilizing **Unstructured.io** for layout-aware partitioning and **Gemini 1.5 Pro** for semantic synthesis.
+Welcome! This project is a beginner-friendly guide to building a **Multi-Modal Retrieval-Augmented Generation (RAG)** system. 
 
-## 🧠 Core Philosophy: Beyond OCR
-
-Standard RAG pipelines often treat PDFs as flat text streams, losing critical context embedded in **tables**, **charts**, and **embedded images**. This project demonstrates a sophisticated architectural pattern that treats a document as a collection of structured elements rather than mere strings.
-
-### The Problem
-
-Traditional text extraction (OCR or basic PDF parsing) strips away:
-
-- **Spatial context**: The relationship between a table and its descriptive text.
-- **Visual evidence**: Diagrams or charts that contain data not present in text.
-- **Tabular structure**: Complex nested tables often become garbled text.
-
-### The Solution: Unstructured.io
-
-This application leverages the **Unstructured** library to perform **Partitioning**. It breaks down the document into high-fidelity elements (Title, NarrativeText, Table, Image, etc.), allowing the system to:
-
-1. **Extract Tables as HTML**: Preserves structural integrity for LLM reasoning.
-2. **Extract Images as Base64**: Enables multi-modal vision analysis.
-3. **Cross-Reference Chunks**: Groups textual narrative with nearby visual/tabular evidence.
+If that sounds like a mouthful, don't worry! It basically means building an AI that can "read" your documents and answer questions about them—even if the info is hidden inside a complex table or a picture.
 
 ---
 
-## 🏗️ Architecture & Processing Pipeline
+## 🧐 What is "Multi-Modal RAG"?
 
-The pipeline follows a four-stage process: **Partitioning → Synthesis → Vectorization → Contextual Retrieval**.
+Most AI systems can only read plain text. But real-world documents (like PDFs) have:
+*   📊 **Tables** with important numbers.
+*   📸 **Images** like charts, graphs, or diagrams.
+*   🏗️ **Structure** like headers and sub-headers.
 
-### 1. Unified Partitioning (via Unstructured)
-
-The system uses the `unstructured` library to decompose PDFs. Unlike native PDF parsers, it performs **Layout Analysis** to detect headers, subheaders, and specifically, `Table` and `Image` objects.
-
-### 2. Multi-Modal Synthesis
-
-For every chunk of text that contains associated tables or images, the system creates an **AI-Enhanced Summary**:
-
-- **Inputs**: Raw Text + Table HTML + Image (Base64).
-- **Process**: A Multi-Modal LLM analyzes all inputs simultaneously.
-- **Output**: A comprehensive semantic description that internalizes numbers from tables and patterns from images into a searchable text block.
-
-### 3. Rich Metadata Storage
-
-Each vectorized chunk in **ChromaDB** carries a payload of `original_content` in its metadata, which includes:
-
-- `raw_text`: The narrative content.
-- `tables_html`: The structural table data.
-- `images_base64`: Visual evidence for multi-modal verification.
-
-### 4. Contextual Retrieval
-
-During query time, the system retrieves the most relevant semantic summaries. Crucially, the "Evidence Drawer" doesn't just show text; it reconstructs the original tables and images associated with those chunks, providing the LLM (and the user) with **direct evidence**.
+**Multi-Modal RAG** allows the AI to "see" all these elements together, giving you much smarter and more accurate answers!
 
 ---
 
-## 🛠️ Technical Stack
+## 🛠️ The Secret Sauce: Unstructured.io
 
-- **Extraction Engine**: [Unstructured.io](https://unstructured.io/)
-- **Orchestration**: Python / FastAPI
-- **LLM / Vision**: Google Gemini 3 Pro (Multimodal) / Gemma (Ollama)
-- **Vector Store**: ChromaDB (with metadata persistence)
-- **Framework**: LangChain (Core primitives)
+In this project, we use a library called **Unstructured**. Think of it as a smart "document sorter." 
+
+Instead of just grabbing all the text as one big mess, Unstructured:
+1.  **Identifies** what is a title, what is a paragraph, and what is a table.
+2.  **Extracts** tables as clean code (HTML) that the AI can understand perfectly.
+3.  **Saves** images so the AI can "look" at them when answering your questions.
 
 ---
 
-## 🚀 Getting Started (Professionals Only)
+## 🚀 How It Works (The Simple Version)
 
-### Prerequisites
+1.  **Upload**: You give the app a PDF.
+2.  **Slicing & Dicing**: Unstructured breaks the PDF into pieces (Text, Tables, Images).
+3.  **Summarizing**: We use **Google Gemini** (a very smart AI) to look at each piece and write a tiny summary of what's in it.
+4.  **Asking**: When you ask a question, the app finds the most relevant "pieces" and shows them to the AI.
+5.  **Answering**: The AI gives you an answer based on both the text and the visual evidence!
 
-- Python 3.10+
-- `libmagic`, `poppler`, and `tesseract` (Unstructured system dependencies)
-- Google AI / Ollama API Keys
+---
 
-### Installation
+## 🚦 Getting Started
+
+Follow these steps to run the project on your own computer:
+
+### 1. Prerequisites
+*   **Python 3.10+** installed.
+*   **Gemini API Key**: Get one for free from [Google AI Studio](https://aistudio.google.com/).
+*   **System Tools**: You might need `poppler-utils` and `tesseract-ocr` installed on your computer for PDF processing.
+
+### 2. Setup
+Clone this folder and install the tools needed:
 
 ```bash
-git clone https://github.com/your-repo/MultiModel-RAG-Unstructured.git
+# Get the code
+git clone https://github.com/balamurugan-shanmuganathan/RAG-Projects.git
 cd MultiModel-RAG-Unstructured
+
+# Install the dependencies
 pip install -r requirements.txt
 ```
 
-### Configuration
-
-Update `src/utils/config.py` with your environment variables:
+### 3. Configure
+Open `src/utils/config.py` and add your Gemini API key:
 
 ```python
 API_KEY = "YOUR_GEMINI_API_KEY"
-MODEL_NAME = "gemini-3-pro"
 ```
 
-### Execution
+### 4. Run the App!
+Start the server and open your browser:
 
 ```bash
+# Start the backend
 uvicorn main:app --reload
 ```
 
----
-
-## 📘 Key Learnings for Developers
-
-- **Table Reliability**: LLMs reason significantly better on HTML-formatted tables than on Markdown or CSV, especially for merged cells.
-- **Multimodal Embedding**: Instead of embedding images directly (which can be noisy), we embed an **AI-generated semantic description** of the image, which aligns better with text-based user queries.
-- **Deduplication**: The system implements content-fingerprinting to ensure that overlapping retrieval chunks are deduplicated before they reached the synthesis phase.
+Then, open `ui/index.html` in your browser to start chatting!
 
 ---
 
-_Developed as a technical demonstration of modern RAG architectures._
+## 💡 What You'll Learn
+*   How to handle "messy" PDFs that normal tools fail at.
+*   How to combine text and images to get better AI answers.
+*   How to use **ChromaDB** to store and find information quickly.
+
+---
+*Created with ❤️ to help beginners dive into the world of Modern AI.*
