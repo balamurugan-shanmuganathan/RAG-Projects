@@ -1,5 +1,7 @@
 # 🌟 Multi-Modal RAG: Chat with Your Documents (Text, Tables, & Images!)
 
+![MultiModal RAG Demo](demo.gif)
+
 Welcome! This project is a beginner-friendly guide to building a **Multi-Modal Retrieval-Augmented Generation (RAG)** system. 
 
 If that sounds like a mouthful, don't worry! It basically means building an AI that can "read" your documents and answer questions about them—even if the info is hidden inside a complex table or a picture.
